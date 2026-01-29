@@ -10,7 +10,7 @@ from pydantic import AnyHttpUrl
 from dotenv import load_dotenv
 from pypdf import PdfReader
 
-# from utils.auth import create_auth0_verifier
+from utils.auth import create_auth0_verifier
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,34 +29,34 @@ logging.basicConfig(
 logger = logging.getLogger("ricky-mcp")
 
 # Get Auth0 configuration from environment
-# auth0_domain = os.getenv("AUTH0_DOMAIN")
-# resource_server_url = os.getenv("RESOURCE_SERVER_URL")
+auth0_domain = os.getenv("AUTH0_DOMAIN")
+resource_server_url = os.getenv("RESOURCE_SERVER_URL")
 
-# if not auth0_domain:
-#     raise ValueError("AUTH0_DOMAIN environment variable is required")
-# if not resource_server_url:
-#     raise ValueError("RESOURCE_SERVER_URL environment variable is required")
+if not auth0_domain:
+    raise ValueError("AUTH0_DOMAIN environment variable is required")
+if not resource_server_url:
+    raise ValueError("RESOURCE_SERVER_URL environment variable is required")
 
 # Load server instructions
-# with open("prompts/server_instructions.md", "r") as file:
-#     server_instructions = file.read()
+with open("prompts/server_instructions.md", "r") as file:
+    server_instructions = file.read()
 
 # Initialize Auth0 token verifier
-# token_verifier = create_auth0_verifier()
+token_verifier = create_auth0_verifier()
 
 # Create an MCP server with OAuth authentication
-mcp = FastMCP("ricky-mcp")
-    # "ricky-mcp",
-    # instructions=server_instructions,
-    # host="0.0.0.0",
+mcp = FastMCP( #"ricky-mcp")
+    "ricky-mcp",
+    instructions=server_instructions,
+    host="0.0.0.0",
     # OAuth Configuration
-    # token_verifier=token_verifier,
-    # auth=AuthSettings(
-    #     issuer_url=AnyHttpUrl(f"https://{auth0_domain}/"),
-    #     resource_server_url=AnyHttpUrl(resource_server_url),
-    #     required_scopes=["openid", "profile", "email", "address", "phone"],
-    # ),
-# )
+    token_verifier=token_verifier,
+    auth=AuthSettings(
+        issuer_url=AnyHttpUrl(f"https://{auth0_domain}/"),
+        resource_server_url=AnyHttpUrl(resource_server_url),
+        required_scopes=["openid", "profile", "email", "address", "phone"],
+    ),
+)
 
 # --- HELPER FUNCTIONS --- #
 async def make_nws_request(url: str) -> dict[str, Any] | None:
@@ -196,8 +196,8 @@ def main() -> None:
         logger.info("Starting MCP server in STDIO mode (stdin is not a TTY).")
 
     # Start server (blocks)
-    mcp.run(transport="stdio")
-    # mcp.run(transport='streamable-http')
+    # mcp.run(transport="stdio")
+    mcp.run(transport='streamable-http')
 
 
 if __name__ == "__main__":
