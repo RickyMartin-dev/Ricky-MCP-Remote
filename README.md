@@ -10,6 +10,7 @@ MCP created by myself for helpful tools I want accessible via MCP.
 ### Quick UV Guide (replaces pip, requirements.txt, venv, etc.)
 * Assuming you have python 3 installed then you have pip installed
 * In terminal:
+  
 '''
 python -m pip install --upgrade pip
 
